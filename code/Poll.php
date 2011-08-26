@@ -145,6 +145,21 @@ class Poll extends DataObject implements PermissionProvider {
 	}
 	
 	/**
+	 * Get all visible polls taking into account the IsActive and embargo/expiry
+	 */
+	static function getVisible( $limit = '' ) {
+		$filter = 'IsActive = 1 AND (Embargo IS NULL OR Embargo < NOW()) AND (Expiry IS NULL OR Expiry > NOW())';
+		return DataObject::get('Poll', $filter, 'ID DESC', '', $limit);
+	}
+	
+	/**
+	 * Get the latest visible poll taking into account the IsActive and embargo/expiry
+	 */
+	static function getOneVisible() {
+		return self::getVisible(1);
+	}
+	
+	/**
 	 * Mark the the poll has been voted by the user, which determined by browser cookie
 	 */
 	function markAsVoted() {
@@ -171,7 +186,7 @@ class Poll extends DataObject implements PermissionProvider {
 	/**
 	 * Check if poll should be visible, taking into account the IsActive and embargo/expiry
 	 */
-	function getVisible() {
+	function isVisible() {
 		if (!$this->IsActive) return false;
 		
 		if ($this->Embargo && SS_Datetime::now()->Format('U')<$this->obj('Embargo')->Format('U') || 
