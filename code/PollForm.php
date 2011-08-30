@@ -24,8 +24,10 @@ class PollForm extends Form {
 		$this->poll = $poll;
 		
 		$data = array();
-		foreach($poll->Choices() as $choice) {
-			$data[$choice->ID] = $choice->Title;
+		if ($choices = DataObject::get('PollChoice', 'PollID='.$poll->ID)) {
+			foreach($choices as $choice) {
+				$data[$choice->ID] = $choice->Title;
+			}
 		}
 		
 		if($poll->MultiChoice) {
