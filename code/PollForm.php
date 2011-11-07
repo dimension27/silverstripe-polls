@@ -169,7 +169,7 @@ class PollForm extends Form {
 			$data[] = $choice->Votes;
 			$count++;
 		}
-		$labels = implode('|', $labels); 
+		$labels = htmlspecialchars(implode('|', $labels));
 		$data = implode(',', $data);
 		$max = (int)(($this->poll->getMaxVotes()+1) * 1.5);
 		$height = $this->chartOptions['height'];
@@ -185,7 +185,7 @@ class PollForm extends Form {
 				"&chd=t1:$data".		// Data
 				"&chm=$labels";			// Custom labels
 
-		return "<img class='poll-chart' src='$href'/>";
+		return '<img class="poll-chart" src="' . $href . '"/>';
 	}
 }
 
